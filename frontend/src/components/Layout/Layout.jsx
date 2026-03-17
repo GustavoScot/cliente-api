@@ -1,16 +1,14 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link} from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import styles from './Layout.module.css'
 import logo2Imagem from '../../assets/logo2.png';
 
 export default function Layout({ children }) {
   const { usuario, logout } = useAuth()
-  const navigate = useNavigate()
 
   const handleLogout = () => {
-    logout()
-    navigate('/login')
-  }
+  logout()
+}
 
   return (
     <div className={styles.container}>
@@ -18,19 +16,8 @@ export default function Layout({ children }) {
         <div className={styles.brand}>
           <img src={logo2Imagem} alt="Logo Cliente API" className={styles.logoImg} />
           <Link to="/clientes" className={styles.brandName}>
-            Cliente API
+            Gerenciamento de clientes
           </Link>
-        </div>
-
-        <div className={styles.navLinks}>
-          <Link to="/clientes" className={styles.navLink}>
-            Clientes
-          </Link>
-          {usuario?.isAdmin && (
-            <Link to="/clientes/novo" className={styles.navLinkPrimary}>
-              + Novo Cliente
-            </Link>
-          )}
         </div>
 
         <div className={styles.userArea}>
