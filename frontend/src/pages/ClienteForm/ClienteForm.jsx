@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useClientes } from '../../hooks/useCliente'
 import Layout from '../../components/Layout/Layout'
 import styles from './ClienteForm.module.css'
+import { mascaraCpf, mascaraTelefone, apenasDigitos } from '../../utils/mascaras'
 
 const FORM_INICIAL = {
   nome: '',
@@ -56,7 +57,12 @@ export default function ClienteForm() {
   }, [id, isEdicao]) // eslint-disable-line
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    let { name, value } = e.target
+
+    if (name === 'cpf') {
+      value = mascaraCpf(value)
+    }
+
     setForm((prev) => ({ ...prev, [name]: value }))
     clearError(name)
   }
@@ -112,6 +118,23 @@ export default function ClienteForm() {
   const handleTelefoneChange = (index, campo, valor) => {
     setForm((prev) => {
       const novos = [...prev.telefones]
+
+      if (campo === 'numero') {
+        valor = mascaraTelefone(valor, novos[index].tipo)
+      }
+
+      if (campo === 'tipo') {
+        novos[index] = {
+          ...novos[index],
+          tipo: valor,
+          numero: mascaraTelefone(
+            apenasDigitos(novos[index].numero),
+            valor
+          ),
+        }
+        return { ...prev, telefones: novos }
+      }
+
       novos[index] = { ...novos[index], [campo]: valor }
       return { ...prev, telefones: novos }
     })
@@ -159,31 +182,68 @@ export default function ClienteForm() {
 
   const validar = () => {
     const erros = {}
-    if (!form.nome.trim()) erros.nome = 'Nome é obrigatório'
-    else if (form.nome.trim().length < 3)
+
+    // ----- Nome -----
+    if (!form.nome.trim()) {
+      erros.nome = 'Nome é obrigatório'
+    } else if (form.nome.trim().length < 3) {
       erros.nome = 'Nome deve ter no mínimo 3 caracteres'
+    } else if (form.nome.trim().length > 100) {
+      erros.nome = 'Nome deve ter no máximo 100 caracteres'
+    } else if (!/^[a-zA-ZÀ-ú0-9 ]+$/.test(form.nome.trim())) {
+      erros.nome = 'Nome permite apenas letras, números e espaços (sem @, #, !, etc.)'
+    }
 
-    if (!form.cpf.trim()) erros.cpf = 'CPF é obrigatório'
+    // ----- CPF -----
+    const cpfDigitos = apenasDigitos(form.cpf)
+    if (!form.cpf.trim()) {
+      erros.cpf = 'CPF é obrigatório'
+    } else if (cpfDigitos.length !== 11) {
+      erros.cpf = 'CPF deve ter 11 dígitos'
+    }
 
-    if (!form.endereco.cep.trim())
+    // ----- Endereço -----
+    const cepDigitos = apenasDigitos(form.endereco.cep)
+    if (!form.endereco.cep.trim()) {
       erros['endereco.cep'] = 'CEP é obrigatório'
-    if (!form.endereco.logradouro.trim())
-      erros['endereco.logradouro'] = 'Logradouro é obrigatório'
-    if (!form.endereco.bairro.trim())
-      erros['endereco.bairro'] = 'Bairro é obrigatório'
-    if (!form.endereco.cidade.trim())
-      erros['endereco.cidade'] = 'Cidade é obrigatória'
-    if (!form.endereco.uf.trim()) erros['endereco.uf'] = 'UF é obrigatória'
+    } else if (cepDigitos.length !== 8) {
+      erros['endereco.cep'] = 'CEP deve ter 8 dígitos'
+    }
 
+    if (!form.endereco.logradouro.trim()) {
+      erros['endereco.logradouro'] = 'Logradouro é obrigatório — consulte o CEP ou preencha manualmente'
+    }
+    if (!form.endereco.bairro.trim()) {
+      erros['endereco.bairro'] = 'Bairro é obrigatório — consulte o CEP ou preencha manualmente'
+    }
+    if (!form.endereco.cidade.trim()) {
+      erros['endereco.cidade'] = 'Cidade é obrigatória — consulte o CEP ou preencha manualmente'
+    }
+    if (!form.endereco.uf.trim()) {
+      erros['endereco.uf'] = 'UF é obrigatória (ex: SP, RJ, MG)'
+    } else if (!/^[A-Z]{2}$/.test(form.endereco.uf.trim())) {
+      erros['endereco.uf'] = 'UF deve ter 2 letras maiúsculas (ex: SP)'
+    }
+
+    // ----- Telefones -----
     form.telefones.forEach((tel, i) => {
-      if (!tel.numero.trim())
+      const digitos = apenasDigitos(tel.numero)
+      if (!tel.numero.trim()) {
         erros[`telefone_${i}`] = 'Número é obrigatório'
+      } else if (tel.tipo === 'CELULAR' && digitos.length !== 11) {
+        erros[`telefone_${i}`] = 'Celular deve ter 11 dígitos — ex: (11) 99999-9999'
+      } else if (tel.tipo !== 'CELULAR' && digitos.length !== 10) {
+        erros[`telefone_${i}`] = 'Telefone fixo deve ter 10 dígitos — ex: (11) 9999-9999'
+      }
     })
 
+    // ----- Emails -----
     form.emails.forEach((email, i) => {
-      if (!email.endereco.trim()) erros[`email_${i}`] = 'Email é obrigatório'
-      else if (!/\S+@\S+\.\S+/.test(email.endereco))
-        erros[`email_${i}`] = 'Email inválido'
+      if (!email.endereco.trim()) {
+        erros[`email_${i}`] = 'Email é obrigatório'
+      } else if (!/\S+@\S+\.\S+/.test(email.endereco)) {
+        erros[`email_${i}`] = 'Email inválido — deve conter @ e domínio (ex: nome@email.com)'
+      }
     })
 
     setErrors(erros)
@@ -204,14 +264,14 @@ export default function ClienteForm() {
 
     const payload = {
       ...form,
-      cpf: form.cpf.replace(/\D/g, ''),
+      cpf: apenasDigitos(form.cpf),
       endereco: {
         ...form.endereco,
-        cep: form.endereco.cep.replace(/\D/g, ''),
+        cep: apenasDigitos(form.endereco.cep),
       },
       telefones: form.telefones.map((t) => ({
         ...t,
-        numero: t.numero.replace(/\D/g, ''),
+        numero: apenasDigitos(t.numero),
       })),
     }
 
