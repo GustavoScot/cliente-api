@@ -25,6 +25,7 @@ export default function ClientesLista() {
   return (
     <Layout>
       <div className={styles.container}>
+
         <div className={styles.header}>
           <div>
             <h1 className={styles.title}>Clientes</h1>
@@ -46,7 +47,7 @@ export default function ClientesLista() {
           <div className={styles.loading}>Carregando...</div>
         )}
 
-        {!carregando && clientes.length === 0 ? (
+        {!carregando && clientes.length === 0 && (
           <div className={styles.empty}>
             <p>Nenhum cliente cadastrado ainda.</p>
             {usuario?.isAdmin && (
@@ -58,7 +59,9 @@ export default function ClientesLista() {
               </button>
             )}
           </div>
-        ) : (
+        )}
+
+        {!carregando && clientes.length > 0 && (
           <div className={styles.tableWrapper}>
             <table className={styles.table}>
               <thead>
@@ -74,22 +77,29 @@ export default function ClientesLista() {
               <tbody>
                 {clientes.map((cliente) => (
                   <tr key={cliente.id}>
-                    <td>
-                      <strong>{cliente.nome}</strong>
-                    </td>
+                    <td><strong>{cliente.nome}</strong></td>
                     <td>{cliente.cpf}</td>
                     <td>
                       {cliente.endereco?.cidade}/{cliente.endereco?.uf}
                     </td>
                     <td>
-                      {cliente.telefones?.[0]?.numero}
-                      {cliente.telefones?.length > 1 && (
-                        <span className={styles.mais}>
-                          +{cliente.telefones.length - 1}
-                        </span>
-                      )}
+                      {cliente.telefones?.map((tel, i) => (
+                        <div key={i} style={{ fontSize: '0.85rem' }}>
+                          <span style={{ color: '#888', marginRight: '0.3rem' }}>
+                            {tel.tipo}:
+                          </span>
+                          {tel.numero}
+                        </div>
+                      ))}
                     </td>
-                    <td>{cliente.emails?.[0]?.endereco}</td>
+                    <td>
+                      {cliente.emails?.map((email, i) => (
+                        <div key={i} style={{ fontSize: '0.85rem' }}>
+                          {email.endereco}
+                        </div>
+                      ))}
+                    </td>
+
                     {usuario?.isAdmin && (
                       <td>
                         <div className={styles.acoes}>
