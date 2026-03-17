@@ -1,0 +1,178 @@
+.container { padding: 0; }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.title { font-size: 1.8rem; color: #1a1a2e; margin: 0; }
+.subtitle { color: #888; margin: 0.25rem 0 0; font-size: 0.9rem; }
+
+.btnNovo {
+  background: var(--sea-blue-primary);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btnNovo:hover { background: var(--sea-blue-dark); }
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: #888;
+  font-size: 1.1rem;
+}
+
+.empty {
+  text-align: center;
+  padding: 4rem;
+  background: white;
+  border-radius: 12px;
+  color: #888;
+}
+.empty span { font-size: 3rem; }
+.empty p { font-size: 1.1rem; margin: 0.5rem 0 1.5rem; }
+
+.tableWrapper {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.table thead { background: #f8fafc; }
+
+.table th {
+  text-align: left;
+  padding: 1rem 1.2rem;
+  font-weight: 700;
+  color: #555;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.table td {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid #f0f0f0;
+  color: #333;
+}
+
+.table tbody tr:hover { background: #f8fafc; }
+.table tbody tr:last-child td { border-bottom: none; }
+
+.mais {
+  background: #e2e8f0;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  margin-left: 0.4rem;
+  color: #555;
+}
+
+.acoes { display: flex; gap: 0.5rem; }
+
+.btnEditar {
+  background: #f0f4ff;
+  color: var(--sea-blue-primary);
+  border: 1px solid #c7d2fe;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+.btnEditar:hover { background: var(--sea-blue-primary); color: white; }
+
+.btnDeletar {
+  background: #fff5f5;
+  color: #e63946;
+  border: 1px solid #fecaca;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+.btnDeletar:hover { background: #e63946; color: white; }
+
+.paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  color: #555;
+}
+
+.btnPagina {
+  background: white;
+  border: 1px solid #e2e8f0;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btnPagina:hover:not(:disabled) { border-color: var(--sea-blue-primary); color: var(--sea-blue-primary); }
+.btnPagina:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 440px;
+  width: 90%;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+}
+.modal h3 { margin: 0 0 1rem; font-size: 1.2rem; }
+.modal p { color: #555; margin: 0.4rem 0; }
+.modalAviso { color: #e63946 !important; font-size: 0.9rem; }
+
+.modalBotoes {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  justify-content: flex-end;
+}
+
+.btnCancelar {
+  background: #f4f6f9;
+  border: 1px solid #e2e8f0;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btnConfirmarDelete {
+  background: #e63946;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btnConfirmarDelete:hover { background: #c1121f; }
