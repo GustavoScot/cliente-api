@@ -3,10 +3,35 @@ import api from '../api/axios'
 
 const AuthContext = createContext(null)
 
+function decodificarToken(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    const rolesStr = payload.roles || ''
+
+    const isAdmin = rolesStr.includes('ROLE_ADMIN')
+
+    return {
+      login: payload.sub,
+      roles: rolesStr,
+      isAdmin,
+    }
+  } catch {
+    return null
+  }
+}
+
 export function AuthProvider({ children }) {
   const [usuario, setUsuario] = useState(() => {
-    const salvo = localStorage.getItem('usuario')
-    return salvo ? JSON.parse(salvo) : null
+    try {
+      const token = localStorage.getItem('token')
+
+      if (token) return decodificarToken(token)
+      return null
+    } catch {
+      localStorage.removeItem('token')
+      localStorage.removeItem('usuario')
+      return null
+    }
   })
 
   const [carregando, setCarregando] = useState(false)
@@ -18,13 +43,7 @@ export function AuthProvider({ children }) {
 
       localStorage.setItem('token', data.token)
 
-      const payload = JSON.parse(atob(data.token.split('.')[1]))
-      const dadosUsuario = {
-        login: payload.sub,
-        roles: payload.roles,
-        isAdmin: payload.roles?.includes('ROLE_ADMIN'),
-      }
-
+      const dadosUsuario = decodificarToken(data.token)
       localStorage.setItem('usuario', JSON.stringify(dadosUsuario))
       setUsuario(dadosUsuario)
 
@@ -40,20 +59,15 @@ export function AuthProvider({ children }) {
     setUsuario(null)
   }, [])
 
-  const value = { usuario, login, logout, carregando }
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ usuario, login, logout, carregando }}>
       {children}
     </AuthContext.Provider>
   )
 }
-
 // eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth deve ser usado dentro de AuthProvider')
-  }
+  if (!context) throw new Error('useAuth deve ser usado dentro de AuthProvider')
   return context
 }
