@@ -19,8 +19,7 @@ spring:
 
 app:
   jwt:
-    secret: "MinhaChaveSuperSecreta!"
-
+    secret: "ClienteApiJwtSecretKeyParaAutenticacaoSegura2026!@#$%MuitoSegura"
     expiration: 3600000
 
   viacep:
