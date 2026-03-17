@@ -9,9 +9,13 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+    const isLoginRoute = config.url?.includes('/auth/login')
+
+    if (!isLoginRoute) {
+      const token = localStorage.getItem('token')
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
     }
     return config
   },
@@ -21,11 +25,15 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const isRotaDeLogin = error.config?.url?.includes('/auth/login')
+    const tokenExpirado = error.response?.status === 401 && !isRotaDeLogin
+
+    if (tokenExpirado) {
       localStorage.removeItem('token')
       localStorage.removeItem('usuario')
       window.location.href = '/login'
     }
+
     return Promise.reject(error)
   }
 )
