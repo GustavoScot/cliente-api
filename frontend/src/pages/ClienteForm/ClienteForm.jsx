@@ -283,7 +283,7 @@ export default function ClienteForm() {
       }
       navigate('/clientes')
     } catch {
-      // Toast já foi exibido pelo hook — não precisa fazer nada aqui
+      // Toast já foi exibido pelo hook
     }
   }
 
@@ -292,7 +292,6 @@ export default function ClienteForm() {
   return (
     <Layout>
       <div className={styles.container}>
-        {/* Cabeçalho */}
         <div className={styles.header}>
           <button
             className={styles.btnVoltar}

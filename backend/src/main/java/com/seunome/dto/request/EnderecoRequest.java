@@ -18,7 +18,7 @@ public class EnderecoRequest {
     private String logradouro;
 
     @Size(max = 50)
-    private String complemento; // opcional
+    private String complemento;
 
     @NotBlank(message = "Bairro é obrigatório")
     @Size(max = 100)

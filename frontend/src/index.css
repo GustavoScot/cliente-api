@@ -1,8 +1,7 @@
 :root {
-  /* Paleta Sea Tecnologia */
-  --sea-blue-light: #48cae4; /* Azul claro do logo */
-  --sea-blue-primary: #0077b6; /* Azul principal */
-  --sea-blue-dark: #023e8a; /* Azul escuro para hover/fundo */
+  --sea-blue-light: #48cae4;
+  --sea-blue-primary: #0077b6;
+  --sea-blue-dark: #023e8a;
   --sea-text-dark: #1a1a2e;
   --sea-text-light: #f4f6f9;
   --sea-danger: #e63946;
