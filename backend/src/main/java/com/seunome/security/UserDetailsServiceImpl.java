@@ -15,7 +15,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final Map<String, UserDetails> usuarios = new HashMap<>();
+    private final Map<String, String[]> usuarios = new HashMap<>();
 
     public UserDetailsServiceImpl(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
@@ -23,28 +23,25 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private void inicializarUsuarios() {
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder.encode("123qwe!@#"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails user = User.builder()
-                .username("user")
-                .password(passwordEncoder.encode("123qwe123"))
-                .roles("USER")
-                .build();
-
-        usuarios.put("admin", admin);
-        usuarios.put("user", user);
+        usuarios.put("admin", new String[]{
+                passwordEncoder.encode("123qwe!@#"), "ADMIN"
+        });
+        usuarios.put("user", new String[]{
+                passwordEncoder.encode("123qwe123"), "USER"
+        });
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails user = usuarios.get(username);
-        if (user == null) {
+        String[] dados = usuarios.get(username);
+        if (dados == null) {
             throw new UsernameNotFoundException("Usuário não encontrado: " + username);
         }
-        return user;
+
+        return User.builder()
+                .username(username)
+                .password(dados[0])
+                .roles(dados[1])
+                .build();
     }
 }

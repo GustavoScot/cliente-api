@@ -7,8 +7,8 @@ export default function Layout({ children }) {
   const { usuario, logout } = useAuth()
 
   const handleLogout = () => {
-  logout()
-}
+    logout()
+  }
 
   return (
     <div className={styles.container}>
