@@ -63,7 +63,7 @@ API REST com interface web para gerenciamento completo de clientes. O sistema pe
 O projeto segue o padrão **monorepo** com duas aplicações independentes:
 
 ```
-cliente-fullstack/
+cliente-api/
 ├── backend/    → API REST (Spring Boot)
 └── frontend/   → Interface web (React + Vite)
 ```
