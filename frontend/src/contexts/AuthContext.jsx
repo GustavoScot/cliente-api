@@ -21,18 +21,8 @@ function decodificarToken(token) {
 }
 
 export function AuthProvider({ children }) {
-  const [usuario, setUsuario] = useState(() => {
-    try {
-      const token = localStorage.getItem('token')
-
-      if (token) return decodificarToken(token)
-      return null
-    } catch {
-      localStorage.removeItem('token')
-      localStorage.removeItem('usuario')
-      return null
-    }
-  })
+  
+  const [usuario, setUsuario] = useState(null)
 
   const [carregando, setCarregando] = useState(false)
 
